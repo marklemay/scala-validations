@@ -34,8 +34,8 @@ object Email {
        
        Result(Email(s.substring(0, loc),s.substring(loc+1, s.length())), warnings);
      }
-       case List() => simpleError(s, """email must conatin a "@" character """);
-       case _ =>  simpleError(s, """email must conatin a single "@" character """);
+       case List() => simpleError(s, """Dude, email must conatin a "@" character""");
+       case _ =>  simpleError(s, """Dude, email must conatin a single "@" character""");
      }
   }
   

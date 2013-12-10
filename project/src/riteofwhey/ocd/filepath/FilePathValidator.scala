@@ -2,9 +2,10 @@ package riteofwhey.ocd.regex
 
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
+import java.io.File
 
-object RegexValidator {
-
+object FilePathValidator {
+//TODO: deal with the scala io lib
 
   import scala.reflect.macros.Context
   import language.experimental.macros
@@ -13,11 +14,11 @@ object RegexValidator {
   import java.util.Date
   import scala.reflect.internal._
 
-  implicit class RegexHelper(val sc: StringContext) extends AnyVal {
-    def r(args: Any*): Pattern = macro RegexHelperimpl
+  implicit class FilePathHelper(val sc: StringContext) extends AnyVal {
+    def FilePath(args: Any*): File = macro FilePathimpl
   }
 
-  def RegexHelperimpl(c: Context)(args: c.Expr[Any]*): c.Expr[Pattern] = {
+  def FilePathimpl(c: Context)(args: c.Expr[Any]*): c.Expr[File] = {
     import c.universe._
 
     c.prefix.tree match {
@@ -77,20 +78,23 @@ object RegexValidator {
           case List((raw,pos)) => {
             //realtime validation here
             try{
-            val p =Pattern.compile(raw)
-            }catch{
-              case ex:PatternSyntaxException =>{ 
-                val enc = c.enclosingPosition
-              //  val ppp = new c.Position(2323)
-                enc.endOrPoint
-                val str= "" +enc.start +" "//+ ppp.
-                
-                //pos.start
-                c.error(pos, ex.getDescription()) }
+            val p =new File(raw)
+            if(!p.exists()){//these are warnings, not errors because a file may be created after compile time
+              //TODO: recursively check up the directeries, and only highlight the part that is in error
+              c.warning(pos, "Hey, no file exists at path "+ p.getAbsolutePath())
+            }else if(!p.canRead()){
+              c.warning(pos, "well a file exists, but you can't read it "+ p.getAbsolutePath())
             }
+            //p.canWrite()
+            //p.canExecute()
+            }catch{
+              case ex:Exception =>{
+                c.error(pos, ex.getMessage()) }
+            }
+            
             //TODO: then parse for real
     
-          reify {  Pattern.compile( c.Expr[String]{Literal(Constant(raw))}.splice ) }
+          reify {  new File( c.Expr[String]{Literal(Constant(raw))}.splice ) }
           }
 
 
@@ -102,7 +106,7 @@ object RegexValidator {
           case _ => {
             //fall back to runtime interpolation
 
-            reify {  Pattern.compile(".*") }
+            reify {  new File("/") }
           }
         }
 
