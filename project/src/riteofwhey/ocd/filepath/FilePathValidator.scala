@@ -1,16 +1,16 @@
 package riteofwhey.ocd.regex
 
-import java.util.regex.Pattern
-import java.util.regex.PatternSyntaxException
+import scala.language.experimental.macros
+import scala.reflect.macros.blackbox.Context
+import java.nio.file.Paths
+import scala.reflect.internal.util.RangePosition
 import java.io.File
 
 object FilePathValidator {
   //TODO: deal with the scala io lib
 
-  import scala.reflect.macros.Context
   import language.experimental.macros
 
-  import reflect.macros.Context
   import java.util.Date
   import scala.reflect.internal._
 
