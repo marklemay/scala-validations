@@ -1,10 +1,13 @@
+may need to turn off implicit underlining to see the error underlines in all there glory.
+TODO: seems like a light bug in scalaide
+
 stuff about things
 
 //TODO: connection string
 
 
 TODO: from https://docs.google.com/spreadsheets/d/1IldmSJldpwaPbUSunU16YVW1WcU3kUaTROyXZ7I-cjw/edit#gid=734066628
-java.util.regex.Pattern.compile	3248	regex
+X java.util.regex.Pattern.compile	3248	regex
 java.io.File	2944	file
 java.lang.System.getProperty	2249	prop
 java.nio.file.Paths.get	1733	file
@@ -30,9 +33,24 @@ TODO: javadoc the public methods
 TODO: Sub line underlining
 TODO: Handle partial correctness when applicable
 TODO: document partial correctness
+TODO: test both styles " and """
 
+TODO: best to let the error line run to the end?
+TODO: get this code reviewed
+
+
+TODO: remove email example
 TODO: mavenize
 TODO: deploy the poor mans repo
 TODO: write up readme
 TODO: post a few places
 TODO: blog about methodology
+
+todo:
+    println(raw"hi\th${1}")
+    
+    println("""hi\th${1}""")
+    
+    println(raw"""hi\th${1}""")
+    
+    does not work like you'd think

@@ -23,7 +23,7 @@ object EmailValidator {
 
     c.prefix.tree match {
       // access data of string interpolation
-      case Apply(_, List(Apply(_, rawParts))) =>
+      case Apply(_, List(Apply(sc, rawParts))) =>
 
         // `parts` contain the strings a string interpolation is built of pairs of raw strings and thier position
         val parts = rawParts map { case t @ Literal(Constant(const: String)) => (const, t.pos) }
@@ -61,6 +61,12 @@ object EmailValidator {
           case _ => {
             //TODO: fall back to runtime interpolation
 
+            c.error(c.prefix.tree.pos, c.prefix.tree.toString()
+                +"\n"+sc.toString()+sc.isTerm
+                +"\n"+args)
+               // +"\n"+ scin)//parts.map(_._1))
+            
+                
             reify { Email(("steve"), ("gmail.com")) }
           }
         }

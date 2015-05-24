@@ -14,6 +14,11 @@ object EmailTest {
 
     println(mail.domain)
     println(mail)
+    
+    
+    val i="hi"
+    
+//    val mail2 = email"${i}someo${2+2}e@hotmail.com$i"
   }
 
 }
