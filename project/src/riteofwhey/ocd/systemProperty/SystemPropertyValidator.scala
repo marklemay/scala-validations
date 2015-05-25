@@ -1,7 +1,5 @@
-package riteofwhey.ocd.regex
+package riteofwhey.ocd.systemProperty
 
-import java.util.regex.Pattern
-import java.util.regex.PatternSyntaxException
 
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox.Context
@@ -10,14 +8,14 @@ import scala.reflect.internal.util.RangePosition
 
 
 //TODO: Javadoc
-object RegexValidator {
+object SystemPropertyValidator {
 
-//TODO: Javadoc
-  implicit class RegexHelper(val sc: StringContext) extends AnyVal {
-    def r(args: Any*): Pattern = macro RegexHelperimpl
+//TODO: Javadoc, basicly copy the system property javadoc
+  implicit class SystemPropertyHelper(val sc: StringContext) extends AnyVal {
+    def sp(args: Any*): String = macro SystemPropertyHelperimpl
   }
 
-  def RegexHelperimpl(c: Context)(args: c.Expr[Any]*): c.Expr[Pattern] = {
+  def SystemPropertyHelperimpl(c: Context)(args: c.Expr[Any]*): c.Expr[String] = {
     import c.universe._
 
     c.prefix.tree match {
@@ -31,37 +29,35 @@ object RegexValidator {
           //there is only one string literal
           case List((raw, pos)) => {
             
-            if(raw.isEmpty()){
-               c.warning(pos, "regex is empty") //somehow this can still be compiled
-            }
             
             //realtime validation here
             try {
-              val p = Pattern.compile(raw)
+              //TODO: we could "spell check" these
+              val p = java.lang.System.getProperty(raw)
+
+              if(p==null){
+                c.warning(pos, "there was no system property with the name '"+raw+"' in the compile context, if you expect it to be in the runtime context, ignore this warning")
+              }
+              
             } catch {
-              case ex: PatternSyntaxException => {
-
-                //fancyness with underlineing
-                //TODO: catch the shit out of this
-
-                val rpos = pos.asInstanceOf[scala.reflect.internal.util.OffsetPosition]
-
-                //TODO: better class?
-                val outpos = new RangePosition(rpos.source, rpos.start + ex.getIndex, rpos.start + ex.getIndex, rpos.start + ex.getIndex) 
-                
-                c.error(outpos.asInstanceOf[c.universe.Position], ex.getDescription())
+              case ex: IllegalArgumentException => {
+                if(ex.getMessage!=null){
+                c.error(pos, ex.getMessage)
+                }else{
+                c.error(pos, "there was a big problem")
+                }
               }
               
               //catch other errors and hendle sensably
               case ex: Exception => {
-                c.error(pos, "this was a very unexpected error, please file a bug on github"+ex)
+                c.error(pos, "this was a very unexpected error, please file a bug on github: "+ex)
               }
             }
             
             //then parse at compile time
-            reify { RegexRuntime.parse(c.Expr[String] { Literal(Constant(raw)) }.splice) }
+            reify { SystemProperty.parse(c.Expr[String] { Literal(Constant(raw)) }.splice) }
             
-            //TODO: we could inject the copiled regex into the scala AST, using dark magic, but that's a little too complicated for this case
+            //TODO: we could inject the copiled BigDecimal into the scala AST, using dark magic, but that's a little too complicated for this case
             
           }
 
@@ -74,14 +70,10 @@ object RegexValidator {
           //TODO: for the love of god write a test for this
           case _ => {
             //fall back to runtime interpolation
-            
-            //TODO: throw a warning to use a runtime interpolator instead?
 
-//this is so dirty
+//ewwwwwww
             reify { 
-
-          
-                RegexRuntime.parse(
+                SystemProperty.parse(
                     //string context
                 (c.Expr[StringContext] {
                 Apply(Select(Ident(typeOf[StringContext].typeSymbol.companion), TermName("apply")), rawParts)

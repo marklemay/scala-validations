@@ -1,7 +1,5 @@
-package riteofwhey.ocd.regex
+package riteofwhey.ocd.bigInt
 
-import java.util.regex.Pattern
-import java.util.regex.PatternSyntaxException
 
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox.Context
@@ -10,14 +8,14 @@ import scala.reflect.internal.util.RangePosition
 
 
 //TODO: Javadoc
-object RegexValidator {
+object BigIntValidator {
 
-//TODO: Javadoc
-  implicit class RegexHelper(val sc: StringContext) extends AnyVal {
-    def r(args: Any*): Pattern = macro RegexHelperimpl
+//TODO: Javadoc, basicly https://docs.oracle.com/javase/7/docs/api/java/math/BigDecimal.html#BigDecimal%28java.lang.String%29
+  implicit class BigIntHelper(val sc: StringContext) extends AnyVal {
+    def bi(args: Any*): BigInt = macro BigIntHelperimpl
   }
 
-  def RegexHelperimpl(c: Context)(args: c.Expr[Any]*): c.Expr[Pattern] = {
+  def BigIntHelperimpl(c: Context)(args: c.Expr[Any]*): c.Expr[BigInt] = {
     import c.universe._
 
     c.prefix.tree match {
@@ -31,37 +29,30 @@ object RegexValidator {
           //there is only one string literal
           case List((raw, pos)) => {
             
-            if(raw.isEmpty()){
-               c.warning(pos, "regex is empty") //somehow this can still be compiled
-            }
             
             //realtime validation here
             try {
-              val p = Pattern.compile(raw)
+              //TODO: could copy the java source to get better error messages, but thats a bit much for this
+              val p = BigInt(raw)
             } catch {
-              case ex: PatternSyntaxException => {
-
-                //fancyness with underlineing
-                //TODO: catch the shit out of this
-
-                val rpos = pos.asInstanceOf[scala.reflect.internal.util.OffsetPosition]
-
-                //TODO: better class?
-                val outpos = new RangePosition(rpos.source, rpos.start + ex.getIndex, rpos.start + ex.getIndex, rpos.start + ex.getIndex) 
-                
-                c.error(outpos.asInstanceOf[c.universe.Position], ex.getDescription())
+              case ex: NumberFormatException => {
+                if(ex.getMessage!=null){
+                c.error(pos, ex.getMessage)
+                }else{
+                c.error(pos, "there was a formatting error in your number")
+                }
               }
               
               //catch other errors and hendle sensably
               case ex: Exception => {
-                c.error(pos, "this was a very unexpected error, please file a bug on github"+ex)
+                c.error(pos, "this was a very unexpected error, please file a bug on github: "+ex)
               }
             }
             
             //then parse at compile time
-            reify { RegexRuntime.parse(c.Expr[String] { Literal(Constant(raw)) }.splice) }
+            reify { BigIntUnsafe.parse(c.Expr[String] { Literal(Constant(raw)) }.splice) }
             
-            //TODO: we could inject the copiled regex into the scala AST, using dark magic, but that's a little too complicated for this case
+            //TODO: we could inject the copiled BigDecimal into the scala AST, using dark magic, but that's a little too complicated for this case
             
           }
 
@@ -74,14 +65,10 @@ object RegexValidator {
           //TODO: for the love of god write a test for this
           case _ => {
             //fall back to runtime interpolation
-            
-            //TODO: throw a warning to use a runtime interpolator instead?
 
-//this is so dirty
+//ewwwwwww
             reify { 
-
-          
-                RegexRuntime.parse(
+                BigIntUnsafe.parse(
                     //string context
                 (c.Expr[StringContext] {
                 Apply(Select(Ident(typeOf[StringContext].typeSymbol.companion), TermName("apply")), rawParts)

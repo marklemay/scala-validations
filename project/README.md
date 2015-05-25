@@ -9,22 +9,22 @@ stuff about things
 TODO: from https://docs.google.com/spreadsheets/d/1IldmSJldpwaPbUSunU16YVW1WcU3kUaTROyXZ7I-cjw/edit#gid=734066628
 X java.util.regex.Pattern.compile	3248	regex
 java.io.File	2944	file
-java.lang.System.getProperty	2249	prop
+X java.lang.System.getProperty	2249	prop
 java.nio.file.Paths.get	1733	file
-java.lang.System.setProperty	1045	prop
-java.util.Properties.setProperty	876	prop
-java.util.Properties.put	778	prop
+? java.lang.System.setProperty	1045	prop
+? java.util.Properties.setProperty	876	prop
+? java.util.Properties.put	778	prop
 java.nio.file.Path.resolve	674	file
-java.lang.String.getBytes	672	bytes
+java.lang.String.getBytes	672	charset
 java.nio.charset.Charset.forName	653	charset
-java.math.BigDecimal	588	num
+X java.math.BigDecimal	588	num
 java.net.URI	539	URI
 java.lang.Class.getResourceAsStream	534	classpath
-java.util.Properties.getProperty	530	prop
+? java.util.Properties.getProperty	530	prop
 java.util.Scanner	490	file
-java.net.URL	477	url
-java.math.BigInteger	475	num
-java.util.regex.Pattern.matcher	449	regex
+X java.net.URL	477	url
+X java.math.BigInteger	475	num
+- java.util.regex.Pattern.matcher	449	regex
 java.io.File.createTempFile	439	file
 
 
@@ -54,3 +54,5 @@ todo:
     println(raw"""hi\th${1}""")
     
     does not work like you'd think
+    
+    perhaps make the multiple versions of classes be similar to the immutable/mutable collections

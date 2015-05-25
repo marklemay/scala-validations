@@ -2,6 +2,7 @@ package macroTest
 
 import java.util.regex.Pattern
 
+//rename
 object RegexTest {
 
   def main(args: Array[String]): Unit = {
@@ -23,11 +24,11 @@ object RegexTest {
     val reg2 = r""".*"""
 
     //we can catch syntax errors
-    val bad1 = r"*\.*xxxx"
-
-    val bad2 = r"(dsdss"
-
-    val bad3 = r"dsd)ss"
+//    val bad1 = r"*\.*xxxx"
+//
+//    val bad2 = r"(dsdss"
+//
+//    val bad3 = r"dsd)ss"
 
     //note that scala needs to escape $, you can't win them all
     //    val reg5 = r"regex$"

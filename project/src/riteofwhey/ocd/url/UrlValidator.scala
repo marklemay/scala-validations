@@ -4,12 +4,12 @@ import java.net.URL
 import java.net.MalformedURLException
 
 object UrlValidator {
+  import scala.language.experimental.macros
+  import scala.reflect.macros.blackbox.Context
+  import scala.reflect.internal.util.RangePosition
 
-  import scala.reflect.macros.Context
   import language.experimental.macros
 
-  import reflect.macros.Context
-  import java.util.Date
   import scala.reflect.internal._
 
   implicit class UrlHelper(val sc: StringContext) extends AnyVal {
@@ -34,24 +34,47 @@ object UrlValidator {
               //TODO: make a 200 check on this url in UrlLiveValidator
             } catch {
               case ex: MalformedURLException => {
-
-                //pos.start
+                //TODO: could put more work into underlining the problem bits
                 c.error(pos, ex.getMessage())
               }
+              
+              case ex: Exception => {
+                c.error(pos, "this was a very unexpected error, please file a bug on github: "+ex)
+              }
+              
             }
-            //TODO: then parse for real
+            //then parse for real
 
-            reify { new URL(c.Expr[String] { Literal(Constant(raw)) }.splice) }
+            reify { Url.parse(c.Expr[String] { Literal(Constant(raw)) }.splice) }
           }
 
           case List() => {
             //don't forget the null case
             c.abort(c.enclosingPosition, "invalid")
           }
+
+
+                    //TODO: for the love of god write a test for this
           case _ => {
             //fall back to runtime interpolation
 
-            reify { new URL("/") }
+//ewwwwwww
+            reify { 
+                Url.parse(
+                    //string context
+                (c.Expr[StringContext] {
+                Apply(Select(Ident(typeOf[StringContext].typeSymbol.companion), TermName("apply")), rawParts)
+              }.splice),
+                    //seq of trees
+              (c.Expr[Seq[Any]] {
+                Apply(Select(Ident(typeOf[Seq[Any]].typeSymbol.companion), TermName("apply")), 
+                    args.map {_.tree}.toList
+                    )
+              }.splice)
+              
+              )
+              
+               }
           }
         }
 
