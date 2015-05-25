@@ -15,7 +15,7 @@ object FilePath {
   
 //TODO:javadoc
   implicit class FilePathHelper(val sc: StringContext) extends AnyVal {
-    def url(args: Any*): File = FilePath.parse(sc, args)
+    def file(args: Any*): File = FilePath.parse(sc, args)
   }  
   
   

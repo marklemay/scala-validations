@@ -1,4 +1,4 @@
-package macroTest
+package macroExample
 
 object BigIntExample {
 

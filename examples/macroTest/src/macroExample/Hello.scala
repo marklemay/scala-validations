@@ -1,4 +1,4 @@
-package macroTest
+package macroExample
 
 import scala.collection.mutable.WrappedArray
 import scala.collection.mutable.WrappedArrayBuilder
@@ -8,19 +8,10 @@ object Hello {
 
   def main(args: Array[String]): Unit = {
         
-        import riteofwhey.ocd.url.Url._
-    
-    try{
-     
-    
- url"htp://hi"  
-    }catch{
-      case ex:java.net.MalformedURLException =>{
-        ex.
-        println(ex)
-      }
-    }
+        import riteofwhey.ocd.filepath.FilePathValidator._
         
+    
+
     
     
     

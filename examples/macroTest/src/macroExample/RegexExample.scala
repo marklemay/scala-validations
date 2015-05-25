@@ -1,9 +1,9 @@
-package macroTest
+package macroExample
 
 import java.util.regex.Pattern
 
 //rename
-object RegexTest {
+object RegexExample {
 
   def main(args: Array[String]): Unit = {
     //    import riteofwhey.ocd.regex.RegexRuntime._
