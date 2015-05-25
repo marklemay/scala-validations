@@ -1,7 +1,8 @@
-package macroExample
+package scratch
 
-import scala.collection.mutable.WrappedArray
-import scala.collection.mutable.WrappedArrayBuilder
+import java.util.Date
+import riteofwhey.macros.Test.hello
+import scala.reflect.runtime.{universe => ru}
 
 object Hello {
   import java.util.Date
