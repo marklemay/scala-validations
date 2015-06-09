@@ -1,4 +1,4 @@
-package macroExample
+package examples
 
 object UrlTest {
   def main(args: Array[String]): Unit = {

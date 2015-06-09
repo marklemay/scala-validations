@@ -7,16 +7,29 @@ import scala.language.experimental.macros
 import scala.reflect.macros.blackbox.Context
 import scala.reflect.internal.util.RangePosition
 
-
-
-//TODO: Javadoc
+/**
+ * This class contains a macro that will validate your your regular expressions at compiletime.
+ * 
+ * TODO: link to usage example
+ */
 object RegexValidator {
 
-//TODO: Javadoc
+  /**
+   * This class contains a macro that will warn you at compile time if you have regular expression errors
+   *
+   * use like r"some reg(ular)+ex(pression)*"
+   *
+   * @param sc (use the implicit interpolator instead)
+   */
   implicit class RegexHelper(val sc: StringContext) extends AnyVal {
+      /**
+   * will return a compiled Pattern, TODO: link to javadoc
+ * @param sc
+ */
     def r(args: Any*): Pattern = macro RegexHelperimpl
   }
 
+  
   def RegexHelperimpl(c: Context)(args: c.Expr[Any]*): c.Expr[Pattern] = {
     import c.universe._
 
@@ -24,81 +37,75 @@ object RegexValidator {
       // access data of string interpolation
       case Apply(_, List(Apply(_, rawParts))) =>
 
-        // `parts` contain the strings a string interpolation is built of, TODO grammar?
+        // `parts` contain the strings a string interpolation is built from
         val parts = rawParts map { case t @ Literal(Constant(const: String)) => (const, t.pos) }
 
         parts match {
-          //there is only one string literal
+          // if there is only one string literal
           case List((raw, pos)) => {
-            
-            if(raw.isEmpty()){
-               c.warning(pos, "regex is empty") //somehow this can still be compiled
+
+            if (raw.isEmpty()) {
+              c.warning(pos, "regex is empty") //somehow this can still be compiled
             }
-            
-            //realtime validation here
+
+            //compiletime validation here
             try {
               val p = Pattern.compile(raw)
             } catch {
               case ex: PatternSyntaxException => {
 
                 //fancyness with underlineing
-                //TODO: catch the shit out of this
 
+                //TODO: this seems a little iffy...
                 val rpos = pos.asInstanceOf[scala.reflect.internal.util.OffsetPosition]
 
                 //TODO: better class?
-                val outpos = new RangePosition(rpos.source, rpos.start + ex.getIndex, rpos.start + ex.getIndex, rpos.start + ex.getIndex) 
-                
+                val outpos = new RangePosition(rpos.source, rpos.start + ex.getIndex, rpos.start + ex.getIndex, rpos.start + ex.getIndex)
+
                 c.error(outpos.asInstanceOf[c.universe.Position], ex.getDescription())
               }
-              
-              //catch other errors and hendle sensably
+
+              //catch other errors and handle sensibly
               case ex: Exception => {
-                c.error(pos, "this was a very unexpected error, please file a bug on github"+ex)
+                c.error(pos, "this was a very unexpected error, please file a bug on github: " + ex)
               }
             }
-            
+
             //then parse at compile time
             reify { RegexRuntime.parse(c.Expr[String] { Literal(Constant(raw)) }.splice) }
-            
-            //TODO: we could inject the copiled regex into the scala AST, using dark magic, but that's a little too complicated for this case
-            
+
+            //TODO: we could inject the compiled regex into the scala AST, using dark magic, but that's a little too complicated for this case
+
           }
 
+          //don't forget the null case
           case List() => {
-            //don't forget the null case
             c.abort(c.enclosingPosition, "invalid")
           }
-          
-          
-          //TODO: for the love of god write a test for this
+
+          // if there is more then 1 string chunck i.e.   r"regex_${2 + 2}ex" 
+          // fall back to runtime interpolation
           case _ => {
-            //fall back to runtime interpolation
-            
-            //TODO: throw a warning to use a runtime interpolator instead?
 
-//this is so dirty
-            reify { 
+            //TODO: this is so dirty
+            reify {
 
-          
-                RegexRuntime.parse(
-                    //string context
+              RegexRuntime.parse(
+                //string context
                 (c.Expr[StringContext] {
-                Apply(Select(Ident(typeOf[StringContext].typeSymbol.companion), TermName("apply")), rawParts)
-              }.splice),
-                    //seq of trees
-              (c.Expr[Seq[Any]] {
-                Apply(Select(Ident(typeOf[Seq[Any]].typeSymbol.companion), TermName("apply")), 
-                    args.map {_.tree}.toList
-                    )
-              }.splice)
-              
-              )
-              
-               }
+                  Apply(Select(Ident(typeOf[StringContext].typeSymbol.companion), TermName("apply")), rawParts)
+                }.splice),
+                //seq of trees
+                (c.Expr[Seq[Any]] {
+                  Apply(Select(Ident(typeOf[Seq[Any]].typeSymbol.companion), TermName("apply")),
+                    args.map { _.tree }.toList)
+                }.splice))
+
+            }
           }
         }
 
+      //If somehow there is anything else, it's wrong
       case _ =>
         c.abort(c.enclosingPosition, "invalid")
     }

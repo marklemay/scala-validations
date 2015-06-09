@@ -1,7 +1,7 @@
 package scratch
 
 import java.util.Date
-import riteofwhey.macros.Test.hello
+//import riteofwhey.macros.Test.hello
 import scala.reflect.runtime.{universe => ru}
 
 object Hello {
@@ -18,10 +18,10 @@ object Hello {
     
     
 
-    import riteofwhey.macros.Test.hello
-    println("hi " + (new Date()))
-
-    hello()
+//    import riteofwhey.macros.Test.hello
+//    println("hi " + (new Date()))
+//
+//    hello()
 
     println(raw"hi\th${1}")
     

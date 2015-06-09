@@ -1,3 +1,11 @@
+regex code review
+package structure
+documentation
+general macro stuff
+variable names
+what's the best way to unit test macros?
+
+
 may need to turn off implicit underlining to see the error underlines in all there glory.
 TODO: seems like a light bug in scalaide
 
