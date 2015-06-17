@@ -72,37 +72,20 @@ object RegexValidator {
             }
 
             //then parse at compile time
-            reify { RegexRuntime.parse(c.Expr[String] { Literal(Constant(raw)) }.splice) }
-
+           c.Expr[Pattern]( q" riteofwhey.ocd.regex.RegexRuntime.parse($raw) ")
+           
             //TODO: we could inject the compiled regex into the scala AST, using dark magic, but that's a little too complicated for this case
-
           }
 
           //don't forget the null case
-          case List() => {
+          case List() => 
             c.abort(c.enclosingPosition, "invalid")
-          }
 
           // if there is more then 1 string chunck i.e.   r"regex_${2 + 2}ex" 
           // fall back to runtime interpolation
-          case _ => {
-
-            //TODO: this is so dirty
-            reify {
-
-              RegexRuntime.parse(
-                //string context
-                (c.Expr[StringContext] {
-                  Apply(Select(Ident(typeOf[StringContext].typeSymbol.companion), TermName("apply")), rawParts)
-                }.splice),
-                //seq of trees
-                (c.Expr[Seq[Any]] {
-                  Apply(Select(Ident(typeOf[Seq[Any]].typeSymbol.companion), TermName("apply")),
-                    args.map { _.tree }.toList)
-                }.splice))
-
-            }
-          }
+          case _ =>
+           c.Expr[Pattern]( q" riteofwhey.ocd.regex.RegexRuntime.parse(StringContext(..$rawParts), Seq[Any](..$args) ) ")
+           
         }
 
       //If somehow there is anything else, it's wrong
