@@ -67,7 +67,7 @@ object FilePath {
 
                   val rpos = pos.asInstanceOf[scala.reflect.internal.util.OffsetPosition]
 
-                  val outpos = new RangePosition(rpos.source, rpos.start + maxpath.toString().length(), rpos.point, rpos.end)
+                  val outpos = new RangePosition(rpos.source, rpos.start + 1 + maxpath.toString().length(), rpos.start + 1 + maxpath.toString().length(), rpos.end - 1)
 
                   c.warning(outpos.asInstanceOf[c.universe.Position], "no file exists at path in the comile context " + p.getAbsolutePath())
                 }
@@ -114,7 +114,7 @@ object FilePath {
               (new File(raw)).getParentFile
             }
 
-            if (!safeParent.exists) {
+            if (safeParent != null && !safeParent.exists) {
 
               //TODO: this common functionality could be factored out
 
@@ -129,7 +129,7 @@ object FilePath {
 
                 val rpos = pos.asInstanceOf[scala.reflect.internal.util.OffsetPosition]
 
-                val outpos = new RangePosition(rpos.source, rpos.start + maxpath.toString().length(), rpos.point, rpos.end)
+                val outpos = new RangePosition(rpos.source, rpos.start + 1 + maxpath.toString().length(), rpos.start + 1 + maxpath.toString().length(), rpos.end - 1)
 
                 c.warning(outpos.asInstanceOf[c.universe.Position], "no directory exists at path in the compile context ")
               }

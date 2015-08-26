@@ -4,17 +4,9 @@ import java.util.regex.Pattern
 
 object RegexExample {
 
-  
-  //    import riteofwhey.ocd.regex.RegexRuntime._
-  import riteofwhey.ocd.regex.RegexValidator._
+  import validation.compiletime.Regex._
 
   // use like you would
-  
-  //    Pattern reg = Pattern.compile("I lost my \\w+");
-  
-  // in java
-
-  // or
   val reg = Pattern.compile("""I lost my \w+""")  //> reg  : java.util.regex.Pattern = I lost my \w+
   // in scala
 
@@ -24,11 +16,11 @@ object RegexExample {
   
 
   //it can catch syntax errors at compile time
-  val bad1 = r"*\.*xxxx"
+  r"*\.*xxxx" //compile error
 
-  val bad2 = r"(dsdss"
+  r"(dsdss" //compile error
 
-  val bad3 = r"dsd)ss"
+  r"dsd)ss" //compile error
   
   
   //triple quates can be uesed, but they are not hugely helpfull
@@ -40,7 +32,7 @@ object RegexExample {
   
 
   //note that scala needs to escape $ (you can't win them all)
-  // r"regex$"
+  // r"regex$"  //compile error
 
   r"regex$$"                                      //> res1: java.util.regex.Pattern = regex$
 
@@ -97,6 +89,6 @@ object RegexExample {
   r"regex_${Pattern.quote(str)}"                  //> res0: java.util.regex.Pattern = regex_\Qsome random( chars\E
 
   //finally it will warn you if the string is empty
-  r""                                             //> reg10  : java.util.regex.Pattern = 
+  r"" // compile warning
   
 }

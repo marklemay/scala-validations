@@ -18,9 +18,14 @@ object ClassPath {
   //TODO: multiple slashes file"C:\Users\Mark\Documents\\\GitHub\scala-validations\"
   //TODO: deal with the scala io lib
 
+  //TODO: add a What's my class path def macro that just warns out ${c.classPath}, so users can tell what's going on.
+
   import scala.reflect.internal._
 
   implicit class ClassPathHelper(val sc: StringContext) extends AnyVal {
+    /**
+     * Return a URL to a resource on the class path
+     */
     def resource(args: Any*): URL = macro ClassPathimpl
   }
 
@@ -37,10 +42,11 @@ object ClassPath {
         parts match {
           case List((raw, pos)) => {
 
-            //compiletime validation here
+            //compile time validation here
             try {
 
               val paths = c.classPath.map { url => Paths.get(url.toURI()).toFile() }.filter(_.isDirectory())
+
               //TODO: recursively explore the jars, till then this should only be a warning
 
               val potentialLocations = paths.map { dir => new File(dir.getCanonicalPath() + raw) }
@@ -92,37 +98,40 @@ object ClassPath {
 
             //TODO: we could also check prefixes
 
-            //this is hacky
+            //this is hacky, it breaks DRY so bad
             val safeParent = if (raw.endsWith("""\""") || raw.endsWith("/")) {
               new File(raw)
             } else {
               (new File(raw)).getParentFile
             }
 
-            //TODO: this is all wrong
+            if (safeParent != null) {
+              val paths = c.classPath.map { url => Paths.get(url.toURI()).toFile() }.filter(_.isDirectory())
 
-            if (!safeParent.exists) {
+              val potentialLocations = paths.map { dir => new File(dir.getCanonicalPath() + safeParent) }
 
-              //TODO: this common functionality could be factored out
+              if (!potentialLocations.exists { f => f.exists() }) {
 
-              var l = List(safeParent)
-              while (l.last.getParentFile != null) {
-                l = l.:+(l.last.getParentFile)
-              }
+                //TODO: this common functionality could be factored out
 
-              val existingPaths = l.filter { _.exists() }
-              if (!existingPaths.isEmpty) {
-                val maxpath = existingPaths.maxBy { _.toString().length }
+                var l = List(safeParent)
+                while (l.last.getParentFile != null) {
+                  l = l.:+(l.last.getParentFile)
+                }
+
+                //TODO: this will not handle edge casses like path//to/file
+                val maxPathLength = l.filter { pp => paths.exists { dir => (new File(dir.getCanonicalPath() + pp)).exists() } }.maxBy { _.toString().length }
 
                 val rpos = pos.asInstanceOf[scala.reflect.internal.util.OffsetPosition]
 
-                val outpos = new RangePosition(rpos.source, rpos.start + maxpath.toString().length(), rpos.point, rpos.end)
+                val outpos = new RangePosition(rpos.source, rpos.start + 1 + maxPathLength.toString().length(), rpos.start + 1 + maxPathLength.toString().length(), rpos.end - 1)
 
-                c.warning(outpos.asInstanceOf[c.universe.Position], "no directory exists in the compile path")
+                //may require a build to move the file
+                c.warning(outpos.asInstanceOf[c.universe.Position], s"Could not find the directory at ${safeParent} are you sure it exists?  (triggrting a recompile may make this error go away)")
               }
             }
 
-           c.Expr[URL]( q" validation.runtime.ClassPath.parse(StringContext(..$rawParts), Seq[Any](..$args) ) ")
+            c.Expr[URL](q" validation.runtime.ClassPath.parse(StringContext(..$rawParts), Seq[Any](..$args) ) ")
           }
         }
 
