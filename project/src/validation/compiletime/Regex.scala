@@ -1,18 +1,16 @@
-package riteofwhey.ocd.regex
+package validation.compiletime
 
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
-
-import scala.language.experimental.macros
 import scala.reflect.macros.blackbox.Context
 import scala.reflect.internal.util.RangePosition
+import scala.language.experimental.macros
 
 /**
- * This class contains a macro that will validate your your regular expressions at compiletime.
- * 
- * TODO: link to usage example
+ * This class contains a macro that will validate your regular expressions at compiletime.
  */
-object RegexValidator {
+// * TODO: link to usage example
+object Regex {
 
   /**
    * This class contains a macro that will warn you at compile time if you have regular expression errors
@@ -22,10 +20,11 @@ object RegexValidator {
    * @param sc (use the implicit interpolator instead)
    */
   implicit class RegexHelper(val sc: StringContext) extends AnyVal {
-      /**
-   * will return a compiled Pattern, TODO: link to javadoc
- * @param sc
- */
+    /**
+     * will return a compiled Pattern
+     * @param sc
+     */
+    // TODO: link to javadoc
     def r(args: Any*): Pattern = macro RegexHelperimpl
   }
 
@@ -56,10 +55,8 @@ object RegexValidator {
 
                 //fancyness with underlineing
 
-                //TODO: this seems a little iffy...
                 val rpos = pos.asInstanceOf[scala.reflect.internal.util.OffsetPosition]
 
-                //TODO: better class?
                 val outpos = new RangePosition(rpos.source, rpos.start + ex.getIndex, rpos.start + ex.getIndex, rpos.start + ex.getIndex)
 
                 c.error(outpos.asInstanceOf[c.universe.Position], ex.getDescription())
@@ -67,12 +64,12 @@ object RegexValidator {
 
               //catch other errors and handle sensibly
               case ex: Exception => {
-                c.error(pos, "this was a very unexpected error, please file a bug on github: " + ex)
+                c.error(pos, "this was a very unexpected error, please file a bug on github (https://github.com/marklemay/scala-validations): " + ex)
               }
             }
 
             //then parse at compile time
-           c.Expr[Pattern]( q" riteofwhey.ocd.regex.RegexRuntime.parse($raw) ")
+           c.Expr[Pattern]( q" validation.runtime.Regex.parse($raw) ")
            
             //TODO: we could inject the compiled regex into the scala AST, using dark magic, but that's a little too complicated for this case
           }
@@ -84,7 +81,7 @@ object RegexValidator {
           // if there is more then 1 string chunck i.e.   r"regex_${2 + 2}ex" 
           // fall back to runtime interpolation
           case _ =>
-           c.Expr[Pattern]( q" riteofwhey.ocd.regex.RegexRuntime.parse(StringContext(..$rawParts), Seq[Any](..$args) ) ")
+           c.Expr[Pattern]( q" validation.runtime.Regex.parse(StringContext(..$rawParts), Seq[Any](..$args) ) ")
            
         }
 
@@ -92,7 +89,5 @@ object RegexValidator {
       case _ =>
         c.abort(c.enclosingPosition, "invalid")
     }
-
   }
-
 }

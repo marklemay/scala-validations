@@ -1,23 +1,23 @@
-package riteofwhey.ocd.regex
+package validation.runtime
 
-//TODO: Rename object?
+import java.util.regex.Pattern
+
 /**
- * this is the unvalidated version of RegexValidator.
+ * this is the unvalidated version of validation.compiletime.Regex.
  * It has the same public interface, and runtime behavior
  */
-object RegexRuntime {
-  import java.util.regex.Pattern
-
+object Regex {
+  
   /**
-   * this is the unvalidated version of RegexValidator.RegexHelper
+   * this is the unvalidated version of validation.compiletime.Regex.RegexHelper
    * It has the same public interface, and runtime behavior.
    *
    * use like r"some reg(ular)+ex(pression)*"
    *
-   * @param sc the strung context (use the implicit interpolator instead
+   * @param sc the string context (use the implicit interpolator instead)
    */
   implicit class RegexHelper(val sc: StringContext) extends AnyVal {
-    def r(args: Any*): Pattern = RegexRuntime.parse(sc, args)
+    def r(args: Any*): Pattern = Regex.parse(sc, args)
   }
 
   /**
@@ -36,11 +36,10 @@ object RegexRuntime {
   /**
    * This is the most literal interface, used in other places for consistency
    *
-   * TODO: refference Pattern.compile doc
-   *
    * @param str the regular expression string
    * @return the compiled regular expression
    */
+  // TODO: refference Pattern.compile doc
   def parse(str: String): Pattern = Pattern.compile(str)
 
 }
