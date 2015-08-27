@@ -11,6 +11,17 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>tptpParser-mvn-repo</id>
+			<url>https://raw.github.com/marklemay/scala-validations/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<dependencies>
 
 		<dependency>
