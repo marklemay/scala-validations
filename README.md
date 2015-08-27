@@ -33,7 +33,7 @@ and
 	</repository>
 </repositories>
 ```
-to your pom.xml (we use the [poor man's repo method](http://stackoverflow.com/questions/14013644/hosting-a-maven-repository-on-github?answertab=votes#tab-top)),
+to your pom.xml.  Right now I use the [poor man's repo method](http://stackoverflow.com/questions/14013644/hosting-a-maven-repository-on-github?answertab=votes#tab-top).  If there's enough intrest, I'll push to Maven Central.
 
 You can also make your project directly dependent on the [binary jar](https://raw.github.com/marklemay/scala-validations/blob/mvn-repo/scala-validations/scala-validations/0.1.0-SNAPSHOT/scala-validations-0.1.0-20150827.000420-1.jar) or the [source jar](https://raw.github.com/marklemay/scala-validations/blob/mvn-repo/scala-validations/scala-validations/0.1.0-SNAPSHOT/scala-validations-0.1.0-20150827.000420-1-sources.jar).
 
