@@ -4,7 +4,7 @@ scala-validations
 
 Add some additional compile time checks with macros.
 
-This project no longer reflects the blog post [Scala Macros that won’t kill you](http://blog.safariflow.com/2013/12/20/scala-macros-that-wont-kill-you/), go to the [2013 version](https://github.com/marklemay/scala-validations/tree/9ea4e18d6cc2317422666cd19aedfe1fb5ad3b4c) to see that code.
+This project no longer reflects the blog post [Scala Macros that won’t kill you](http://blog.safariflow.com/2013/12/20/scala-macros-that-wont-kill-you/), go to the [old version](https://github.com/marklemay/scala-validations/tree/9ea4e18d6cc2317422666cd19aedfe1fb5ad3b4c) to see that code.
 
 I welcome all patches, pull requests, Issues, and Comments!
 
