@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>scala-validations</groupId>
+  <artifactId>scala-validations</artifactId>
+  <versioning>
+    <versions>
+      <version>0.1.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20150827000420</lastUpdated>
+  </versioning>
+</metadata>
