@@ -8,6 +8,10 @@
 	<properties>
 		<scalaVersion>2.11</scalaVersion>
 		<scalaFullVersion>2.11.7</scalaFullVersion>
+		
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- github server corresponds to entry in ~/.m2/settings.xml -->

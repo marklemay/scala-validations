@@ -8,7 +8,7 @@ object RegexExample {
 
   // use like you would
   val reg = Pattern.compile("""I lost my \w+""")  //> reg  : java.util.regex.Pattern = I lost my \w+
-  // in scala
+  // in Scala
 
   val reg1 = r"I lost my \w+"                     //> reg1  : java.util.regex.Pattern = I lost my \w+
   //TODO: match example?

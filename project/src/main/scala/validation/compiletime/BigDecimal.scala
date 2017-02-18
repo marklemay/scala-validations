@@ -9,13 +9,14 @@ import scala.language.experimental.macros
 object BigDecimal {
 
   /**
-   * This class contains a macro that will warn you at compile time if you have regular expression errors
+   * This class contains a macro that will warn you at compile time if you have errors in your BigDecimal
    *
    * use like dec"999999999999999999.99"
+   * 
+   * see: https://docs.oracle.com/javase/7/docs/api/java/math/BigDecimal.html#BigDecimal%28java.lang.String%29
    *
    * @param sc (use the implicit interpolator instead)
    */
-  //TODO: Javadoc, basicly https://docs.oracle.com/javase/7/docs/api/java/math/BigDecimal.html#BigDecimal%28java.lang.String%29
   implicit class BigDecimalHelper(val sc: StringContext) extends AnyVal {
     /**
      * will return a BigDecimal

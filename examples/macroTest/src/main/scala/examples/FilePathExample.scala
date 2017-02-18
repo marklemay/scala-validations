@@ -7,7 +7,7 @@ object FilePathExample {
   def main(args: Array[String]): Unit = {
     import validation.compiletime.FilePath._
 
-    //note that this example will warn differnetly depend on your local configuration
+    //note that this example will warn differently depend on your local configuration
 
     val file1 = file"""C:\path\to\some\file.txt"""
 
