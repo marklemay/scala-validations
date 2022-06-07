@@ -1,3 +1,5 @@
+https://github.com/fthomas/refined has superseded this project.
+
 scala-validations
 ==========
 ![usage screenshot](https://raw.githubusercontent.com/marklemay/scala-validations/master/examples/macroTest/demo.png)
